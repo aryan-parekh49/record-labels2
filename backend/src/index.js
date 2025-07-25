@@ -11,8 +11,11 @@ app.use(express.json());
 const dbFile = process.env.DB_FILE || path.join(__dirname, '../data/crime.sqlite');
 const db = createDb(dbFile);
 const SECRET = process.env.JWT_SECRET || 'secret123';
-let users = [{ username: 'admin', password: 'password', role: 'dcp' }];
+ let users = [{ username: 'admin', password: 'password', role: 'dcp' }];
 let penalCodes = [];
+=======
+const users = [{ username: 'admin', password: 'password', role: 'dcp' }];
+ 
 
 function auth(req, res, next) {
   if (req.path === '/api/login') return next();
@@ -43,7 +46,7 @@ function loadData() {
       nextId = crimes.reduce((m, c) => Math.max(m, c.id), 0) + 1;
     }
   });
-  penalCodes = [];
+   penalCodes = [];
   db.all('SELECT * FROM penal_codes', [], (err, rows) => {
     if (!err) {
       penalCodes = rows;
@@ -70,7 +73,19 @@ function saveCrime(crime) {
 function updateCrimeDb(crime) {
   const stmt = db.prepare(`UPDATE crimes SET category=?, heading=?, station=?, officer=?, penalCode=?, status=?, reportedAt=?, deadline=?, remindersSent=?, escalated=?, escalationReason=? WHERE id=?`);
   stmt.run(crime.category, crime.heading, crime.station, crime.officer, crime.penalCode, crime.status, crime.reportedAt, crime.deadline, crime.remindersSent, crime.escalated ? 1 : 0, crime.escalationReason, crime.id);
+=======
 }
+
+function saveCrime(crime) {
+  const stmt = db.prepare(`INSERT INTO crimes (id, category, heading, station, officer, status, reportedAt, deadline, remindersSent, escalated, escalationReason)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+  stmt.run(crime.id, crime.category, crime.heading, crime.station, crime.officer, crime.status, crime.reportedAt, crime.deadline, crime.remindersSent, crime.escalated ? 1 : 0, crime.escalationReason);
+}
+
+function updateCrimeDb(crime) {
+  const stmt = db.prepare(`UPDATE crimes SET category=?, heading=?, station=?, officer=?, status=?, reportedAt=?, deadline=?, remindersSent=?, escalated=?, escalationReason=? WHERE id=?`);
+  stmt.run(crime.category, crime.heading, crime.station, crime.officer, crime.status, crime.reportedAt, crime.deadline, crime.remindersSent, crime.escalated ? 1 : 0, crime.escalationReason, crime.id);
+ }
 
 function deleteCrimeDb(id) {
   db.run('DELETE FROM crimes WHERE id=?', [id]);
@@ -82,7 +97,7 @@ function addNoteDb(crimeId, note) {
   stmt.run(crimeId, note.text, note.createdAt);
 }
 
-function addPenalCodeDb(code) {
+ function addPenalCodeDb(code) {
   const stmt = db.prepare(`INSERT INTO penal_codes (code, description, days) VALUES (?, ?, ?)`);
   stmt.run(code.code, code.description, code.days);
 }
@@ -100,6 +115,9 @@ function updateUserDb(user) {
 function deleteUserDb(username) {
   db.run('DELETE FROM users WHERE username=?', [username]);
 }
+=======
+=======
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 const DEFAULT_DEADLINE_DAYS = {
@@ -151,7 +169,7 @@ function dueSoon(days = 7) {
   });
 }
 
-function resetData(cb) {
+ function resetData(cb) {
   crimes = [];
   nextId = 1;
   db.serialize(() => {
@@ -165,7 +183,13 @@ function resetData(cb) {
     const stmt = db.prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)');
   stmt.run('admin', 'password', 'dcp', cb);
   });
-}
+=======
+function resetData() {
+  crimes = [];
+  nextId = 1;
+  db.exec('DELETE FROM crimes');
+  db.exec('DELETE FROM notes');
+ }
 
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
@@ -175,7 +199,7 @@ app.post('/api/login', (req, res) => {
   res.json({ token });
 });
 
-app.get('/api/users', (req, res) => {
+ app.get('/api/users', (req, res) => {
   res.json(users.map(u => ({ username: u.username, role: u.role })));
 });
 
@@ -238,14 +262,20 @@ app.post('/api/crimes', (req, res) => {
     const pc = penalCodes.find(p => p.code === penalCode);
     if (pc) days = pc.days;
   }
+=======
+app.post('/api/crimes', (req, res) => {
+  const { category = 'Major', heading = 'default', station = 'Station 1', officer = '', ...rest } = req.body;
+  const days = DEFAULT_DEADLINE_DAYS[heading] || DEFAULT_DEADLINE_DAYS.default;
+
   const reportedAt = new Date();
   const deadline = new Date(reportedAt.getTime() + days * DAY_MS);
   const crime = {
     id: nextId++,
     category,
     heading,
-    penalCode,
-    reportedAt: reportedAt.toISOString(),
+     penalCode,
+=======
+     reportedAt: reportedAt.toISOString(),
     deadline: deadline.toISOString(),
     station,
     officer,
@@ -305,7 +335,7 @@ app.get('/api/crimes/category/:category', (req, res) => {
   res.json(crimes.filter(c => c.category === category));
 });
 
-app.get('/api/crimes/status/:status', (req, res) => {
+ app.get('/api/crimes/status/:status', (req, res) => {
   const { status } = req.params;
   res.json(crimes.filter(c => c.status === status));
 });
@@ -315,7 +345,8 @@ app.get('/api/stats/status/:status', (req, res) => {
   const list = crimes.filter(c => c.status === status);
   res.json({ status, total: list.length });
 });
-app.get('/api/stats', (req, res) => {
+=======
+ app.get('/api/stats', (req, res) => {
   const total = crimes.length;
   const pending = crimes.filter(c => c.status === 'pending').length;
   const resolved = crimes.filter(c => c.status === 'resolved').length;

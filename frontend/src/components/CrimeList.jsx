@@ -1,6 +1,4 @@
-import { useEffect, useState, Fragment } from 'react'
-import { getCrimes, resolveCrime, escalateCrime } from '../services/api.js'
-import EvidenceList from './EvidenceList.jsx'
+ 
 import { useTranslate } from '../localization/i18n.jsx'
 
 function CrimeList() {
@@ -34,8 +32,7 @@ function CrimeList() {
     await escalateCrime(id, reason)
     setCrimes(crimes.map(c => c.id === id ? {...c, escalated: true} : c))
   }
-
-  const [showEvidenceFor, setShowEvidenceFor] = useState(null)
+ 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
 
@@ -52,34 +49,7 @@ function CrimeList() {
       </thead>
       <tbody>
         {crimes.map(c => (
-          <Fragment key={c.id}>
-            <tr key={c.id} className={c.overdue ? 'overdue' : ''}>
-              <td>{c.id}</td>
-              <td>{c.type || c.heading}</td>
-              <td>{c.status}</td>
-              <td>{new Date(c.deadline).toLocaleDateString()}</td>
-              <td>
-                {c.status !== 'resolved' && (
-                  <button onClick={() => handleResolve(c.id)}>{t('resolve')}</button>
-                )}
-                {' '}
-                {!c.escalated && c.overdue && (
-                  <button onClick={() => handleEscalate(c.id)}>{t('escalate')}</button>
-                )}
-                {' '}
-                <button onClick={() => setShowEvidenceFor(showEvidenceFor===c.id?null:c.id)}>
-                  {t('evidence')}
-                </button>
-              </td>
-            </tr>
-            {showEvidenceFor === c.id && (
-              <tr>
-                <td colSpan="5">
-                  <EvidenceList crimeId={c.id} />
-                </td>
-              </tr>
-            )}
-          </Fragment>
+ 
         ))}
       </tbody>
     </table>

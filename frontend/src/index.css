@@ -66,10 +66,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-body.light {
-  color: #213547;
-  background-color: #ffffff;
-}
-body.light button {
-  background-color: #f9f9f9;
-}
+ 
