@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useTranslate } from '../localization/i18n.jsx'
+import LanguageSelector from './LanguageSelector'
 
 function Login({ onLogin }) {
   const [role, setRole] = useState('PI')
-  const t = useTranslate
+  const t = useTranslate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -12,6 +13,7 @@ function Login({ onLogin }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <LanguageSelector />
       <h1>{t('login')}</h1>
       <select value={role} onChange={e => setRole(e.target.value)}>
         <option value="DCP">DCP</option>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { getCrimes, resolveCrime, escalateCrime } from '../services/api.js'
+import { useTranslate } from '../localization/i18n.jsx'
 
 function CrimeList() {
   const [crimes, setCrimes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const t = useTranslate()
 
   useEffect(() => {
     async function load() {
@@ -40,7 +42,7 @@ function CrimeList() {
       <thead>
         <tr>
           <th>ID</th>
-          <th>Type</th>
+          <th>{t('crimeType')}</th>
           <th>Status</th>
           <th>Deadline</th>
           <th>Actions</th>
@@ -55,11 +57,11 @@ function CrimeList() {
             <td>{new Date(c.deadline).toLocaleDateString()}</td>
             <td>
               {c.status !== 'resolved' && (
-                <button onClick={() => handleResolve(c.id)}>Resolve</button>
+                <button onClick={() => handleResolve(c.id)}>{t('resolve')}</button>
               )}
               {' '}
               {!c.escalated && c.overdue && (
-                <button onClick={() => handleEscalate(c.id)}>Escalate</button>
+                <button onClick={() => handleEscalate(c.id)}>{t('escalate')}</button>
               )}
             </td>
           </tr>

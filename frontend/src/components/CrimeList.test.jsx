@@ -2,6 +2,7 @@ import { describe, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import CrimeList from './CrimeList'
+import { LangProvider } from '../localization/i18n.jsx'
 
 vi.stubGlobal('fetch', vi.fn())
 
@@ -13,7 +14,11 @@ beforeEach(() => {
 
 describe('CrimeList', () => {
   it('renders crimes from API', async () => {
-    render(<CrimeList />)
+    render(
+      <LangProvider>
+        <CrimeList />
+      </LangProvider>
+    )
     expect(fetch).toHaveBeenCalled()
     await waitFor(() => {
       expect(screen.getByText('theft')).toBeInTheDocument()

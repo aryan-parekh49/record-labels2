@@ -31,3 +31,9 @@ export async function escalateCrime(id, reason) {
   if (!res.ok) throw new Error('Failed to escalate crime');
   return res.json();
 }
+
+export async function getStats() {
+  const res = await fetch(`${BASE_URL}/api/stats`);
+  if (!res.ok) throw new Error('Failed to load stats');
+  return res.json();
+}
