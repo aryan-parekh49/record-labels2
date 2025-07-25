@@ -14,6 +14,7 @@ const translations = {
     resolve: 'Resolve',
     escalate: 'Escalate',
     language: 'Language',
+ 
   },
   hi: {
     login: 'क्राइम सीआरएस लॉगिन',
@@ -28,6 +29,7 @@ const translations = {
     resolve: 'समाधान',
     escalate: 'एस्कलेट',
     language: 'भाषा',
+ 
   },
   mr: {
     login: 'क्राईम सीआरएस लॉगिन',
@@ -42,6 +44,7 @@ const translations = {
     resolve: 'निकाल',
     escalate: 'एस्कलेट',
     language: 'भाषा',
+ 
   },
 };
 

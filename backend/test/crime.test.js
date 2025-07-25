@@ -4,7 +4,9 @@ const app = require('../src/index');
 let token;
 
 beforeAll(async () => {
-  const res = await request(app).post('/api/login').send({ username: 'admin', password: 'password' });
+   await new Promise(res => app.resetData(res));
+=======
+   const res = await request(app).post('/api/login').send({ username: 'admin', password: 'password' });
   token = res.body.token;
 });
 
@@ -12,10 +14,12 @@ function authed(req) {
   return req.set('Authorization', `Bearer ${token}`);
 }
 
+ beforeEach(() => new Promise(res => app.resetData(res)));
+=======
 afterEach(() => {
   app.resetData();
 });
-
+ 
 describe('Crime API', () => {
   it('should create a crime with default deadline and mark it resolved', async () => {
     const crimeData = { type: 'theft', description: 'stolen phone' };
@@ -178,4 +182,66 @@ describe('Crime API', () => {
     const list2 = await authed(request(app).get(`/api/crimes/${id}/notes`));
     expect(list2.body.length).toBe(0);
   });
-});
+ 
+  it('should filter crimes by status and provide counts', async () => {
+    const c1 = await authed(request(app).post('/api/crimes')).send({});
+    const c2 = await authed(request(app).post('/api/crimes')).send({});
+
+    await authed(request(app).post(`/api/crimes/${c1.body.id}/resolve`));
+
+    const pendingList = await authed(request(app).get('/api/crimes/status/pending'));
+    expect(pendingList.body.length).toBe(1);
+
+    const resolvedList = await authed(request(app).get('/api/crimes/status/resolved'));
+    expect(resolvedList.body.length).toBe(1);
+
+    const stats = await authed(request(app).get('/api/stats/status/resolved'));
+    expect(stats.body.total).toBe(1);
+  });
+
+  it('should filter crimes by status and provide counts', async () => {
+    const c1 = await authed(request(app).post('/api/crimes')).send({});
+    const c2 = await authed(request(app).post('/api/crimes')).send({});
+
+    await authed(request(app).post(`/api/crimes/${c1.body.id}/resolve`));
+
+    const pendingList = await authed(request(app).get('/api/crimes/status/pending'));
+    expect(pendingList.body.length).toBe(1);
+
+    const resolvedList = await authed(request(app).get('/api/crimes/status/resolved'));
+    expect(resolvedList.body.length).toBe(1);
+
+    const stats = await authed(request(app).get('/api/stats/status/resolved'));
+    expect(stats.body.total).toBe(1);
+  });
+
+  it('should manage penal codes and apply custom days', async () => {
+    const pcRes = await authed(request(app).post('/api/penal-codes')).send({ code: 'PC123', description: 'Test', days: 10 });
+    expect(pcRes.status).toBe(201);
+    const list = await authed(request(app).get('/api/penal-codes'));
+    expect(list.body.find(p => p.code === 'PC123')).toBeTruthy();
+
+    const create = await authed(request(app).post('/api/crimes')).send({ penalCode: 'PC123' });
+    const diff = Math.round((new Date(create.body.deadline) - new Date(create.body.reportedAt)) / (24*60*60*1000));
+    expect(diff).toBe(10);
+
+    const del = await authed(request(app).delete('/api/penal-codes/PC123'));
+    expect(del.status).toBe(200);
+  });
+
+  it('should manage users and allow login', async () => {
+    const add = await authed(request(app).post('/api/users')).send({ username: 'bob', password: 'secret', role: 'pi' });
+    expect(add.status).toBe(201);
+
+    const list = await authed(request(app).get('/api/users'));
+    expect(list.body.find(u => u.username === 'bob')).toBeTruthy();
+
+    const loginRes = await request(app).post('/api/login').send({ username: 'bob', password: 'secret' });
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toBeTruthy();
+
+    const del = await authed(request(app).delete('/api/users/bob'));
+    expect(del.status).toBe(200);
+  });
+=======
+ });

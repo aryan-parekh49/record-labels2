@@ -1,4 +1,6 @@
 const BASE_URL = 'http://localhost:3000';
+ const EVIDENCE_URL = 'http://localhost:4000';
+ 
 
 export async function getCrimes() {
   const res = await fetch(`${BASE_URL}/api/crimes`);
@@ -37,3 +39,4 @@ export async function getStats() {
   if (!res.ok) throw new Error('Failed to load stats');
   return res.json();
 }
+ 

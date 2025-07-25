@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { getCrimes, resolveCrime, escalateCrime } from '../services/api.js'
+ 
 import { useTranslate } from '../localization/i18n.jsx'
 
 function CrimeList() {
@@ -33,7 +32,7 @@ function CrimeList() {
     await escalateCrime(id, reason)
     setCrimes(crimes.map(c => c.id === id ? {...c, escalated: true} : c))
   }
-
+ 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
 
@@ -50,21 +49,7 @@ function CrimeList() {
       </thead>
       <tbody>
         {crimes.map(c => (
-          <tr key={c.id} className={c.overdue ? 'overdue' : ''}>
-            <td>{c.id}</td>
-            <td>{c.type || c.heading}</td>
-            <td>{c.status}</td>
-            <td>{new Date(c.deadline).toLocaleDateString()}</td>
-            <td>
-              {c.status !== 'resolved' && (
-                <button onClick={() => handleResolve(c.id)}>{t('resolve')}</button>
-              )}
-              {' '}
-              {!c.escalated && c.overdue && (
-                <button onClick={() => handleEscalate(c.id)}>{t('escalate')}</button>
-              )}
-            </td>
-          </tr>
+ 
         ))}
       </tbody>
     </table>
