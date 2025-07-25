@@ -15,6 +15,7 @@ node src/index.js
 - `POST /api/crimes` – create a crime record
 - `GET /api/crimes/overdue` – list overdue crimes
 - `GET /api/crimes/reminders-due` – list crimes that should receive a reminder
+- `GET /api/crimes/due-soon?days=7` – list crimes nearing their deadline (default 7 days)
 - `POST /api/crimes/:id/remind` – mark a reminder as sent
 - `POST /api/crimes/:id/escalate` – escalate an overdue crime with a reason
 - `GET /api/crimes/escalated` – list escalated crimes

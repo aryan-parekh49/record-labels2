@@ -34,6 +34,18 @@ function remindersDue() {
   return crimes.filter(c => getReminderLevel(c) > 0);
 }
 
+function dueSoon(days = 7) {
+  const threshold = Date.now() + days * DAY_MS;
+  return crimes.filter(c => {
+    const deadline = new Date(c.deadline).getTime();
+    return (
+      c.status === 'pending' &&
+      deadline <= threshold &&
+      deadline >= Date.now()
+    );
+  });
+}
+
 function resetData() {
   crimes = [];
   nextId = 1;
@@ -64,6 +76,11 @@ app.post('/api/crimes', (req, res) => {
 
 app.get('/api/crimes/reminders-due', (req, res) => {
   res.json(remindersDue());
+});
+
+app.get('/api/crimes/due-soon', (req, res) => {
+  const days = parseInt(req.query.days || '7', 10);
+  res.json(dueSoon(days));
 });
 
 app.get('/api/crimes', (req, res) => {
@@ -202,3 +219,4 @@ if (require.main === module) {
 module.exports = app;
 module.exports.resetData = resetData;
 module.exports.isOverdue = isOverdue;
+module.exports.dueSoon = dueSoon;

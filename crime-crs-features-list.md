@@ -7,6 +7,7 @@ This document summarizes key capabilities implemented in this prototype.
 - Automatic resolution deadlines based on heading
 - Overdue detection and listing
 - Reminder tracking with three-stage reminders
+- Listing upcoming deadlines with a due-soon query
 - Escalation of overdue crimes with reason logging
 - Station assignment for crimes and per-station queries
 - Officer assignment for crimes and per-officer queries

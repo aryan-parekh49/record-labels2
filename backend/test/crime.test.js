@@ -162,4 +162,19 @@ describe('Crime API', () => {
     expect(catStats.body.resolved).toBe(1);
     expect(catStats.body.pending).toBe(1);
   });
+
+  it('should list crimes that are due soon', async () => {
+    const res1 = await request(app)
+      .post('/api/crimes')
+      .send({ type: 'pendingCase' });
+    const id = res1.body.id;
+    // set deadline 5 days from now
+    const deadline = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
+    await request(app)
+      .put(`/api/crimes/${id}`)
+      .send({ deadline });
+
+    const dueList = await request(app).get('/api/crimes/due-soon?days=7');
+    expect(dueList.body.find(c => c.id === id)).toBeTruthy();
+  });
 });
