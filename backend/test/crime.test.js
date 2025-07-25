@@ -186,4 +186,25 @@ describe('Crime API', () => {
     const list = await request(app).get('/api/crimes');
     expect(list.body.find(c => c.id === id)).toBeUndefined();
   });
+
+  it('should allow adding and removing notes for a crime', async () => {
+    const create = await request(app).post('/api/crimes').send({ type: 'note' });
+    const id = create.body.id;
+
+    const addRes = await request(app)
+      .post(`/api/crimes/${id}/notes`)
+      .send({ text: 'first note' });
+    expect(addRes.status).toBe(201);
+    expect(addRes.body.text).toBe('first note');
+
+    const list1 = await request(app).get(`/api/crimes/${id}/notes`);
+    expect(list1.body.length).toBe(1);
+
+    const noteId = addRes.body.id;
+    const delRes = await request(app).delete(`/api/crimes/${id}/notes/${noteId}`);
+    expect(delRes.status).toBe(200);
+
+    const list2 = await request(app).get(`/api/crimes/${id}/notes`);
+    expect(list2.body.length).toBe(0);
+  });
 });

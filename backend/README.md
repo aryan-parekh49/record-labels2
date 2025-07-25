@@ -17,6 +17,9 @@ node src/index.js
 - `GET /api/crimes/:id` – retrieve a specific crime
 - `PUT /api/crimes/:id` – update a crime
 - `DELETE /api/crimes/:id` – remove a crime record
+- `GET /api/crimes/:id/notes` – list notes for a crime
+- `POST /api/crimes/:id/notes` – add a note
+- `DELETE /api/crimes/:id/notes/:noteId` – remove a note
 - `GET /api/crimes/overdue` – list overdue crimes
 - `GET /api/crimes/reminders-due` – list crimes that should receive a reminder
 - `GET /api/crimes/due-soon?days=7` – list crimes nearing their deadline (default 7 days)

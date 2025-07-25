@@ -13,6 +13,12 @@ const DEFAULT_DEADLINE_DAYS = {
 let crimes = [];
 let nextId = 1;
 
+function addNote(crime, text) {
+  const note = { id: crime.notes.length + 1, text, createdAt: new Date().toISOString() };
+  crime.notes.push(note);
+  return note;
+}
+
 function isOverdue(crime) {
   return new Date(crime.deadline).getTime() < Date.now() && crime.status !== 'resolved';
 }
@@ -68,6 +74,7 @@ app.post('/api/crimes', (req, res) => {
     remindersSent: 0,
     escalated: false,
     escalationReason: '',
+    notes: [],
     ...rest,
   };
   crimes.push(crime);
@@ -178,6 +185,40 @@ app.delete('/api/crimes/:id', (req, res) => {
     return res.status(404).send('Not Found');
   }
   const [removed] = crimes.splice(index, 1);
+  res.json(removed);
+});
+
+app.get('/api/crimes/:id/notes', (req, res) => {
+  const crime = crimes.find(c => c.id === parseInt(req.params.id));
+  if (!crime) {
+    return res.status(404).send('Not Found');
+  }
+  res.json(crime.notes);
+});
+
+app.post('/api/crimes/:id/notes', (req, res) => {
+  const crime = crimes.find(c => c.id === parseInt(req.params.id));
+  if (!crime) {
+    return res.status(404).send('Not Found');
+  }
+  const { text } = req.body;
+  if (!text) {
+    return res.status(400).send('Text required');
+  }
+  const note = addNote(crime, text);
+  res.status(201).json(note);
+});
+
+app.delete('/api/crimes/:id/notes/:noteId', (req, res) => {
+  const crime = crimes.find(c => c.id === parseInt(req.params.id));
+  if (!crime) {
+    return res.status(404).send('Not Found');
+  }
+  const index = crime.notes.findIndex(n => n.id === parseInt(req.params.noteId));
+  if (index === -1) {
+    return res.status(404).send('Not Found');
+  }
+  const [removed] = crime.notes.splice(index, 1);
   res.json(removed);
 });
 

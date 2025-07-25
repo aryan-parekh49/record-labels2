@@ -16,6 +16,7 @@ This document summarizes key capabilities implemented in this prototype.
 - Statistics endpoint summarizing pending, resolved, and overdue counts
 - Station-specific statistics endpoint
 - Category filtering for crimes and category-specific statistics
+- Notes can be added to crimes for additional context
 
 ## System Overview
 The code is intentionally lightweight and runs as a single Express service. It stores data in memory for demonstration and includes Jest tests for main workflows.
