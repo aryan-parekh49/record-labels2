@@ -56,3 +56,51 @@ npm test
 ```
 
 This runs the backend, evidence service, auth service, and frontend tests sequentially.
+
+## Deployment
+
+The easiest way to start all services together is with Docker Compose. First
+build the images and then launch the stack:
+
+```bash
+# Build images
+docker-compose build
+
+# Start the stack
+docker-compose up -d
+```
+
+The backend service exposes port `3000`, the evidence service `4000`, the auth
+service `5000`, and the frontend `5173`. The backend data is stored in the
+`backend-data` Docker volume.
+
+### Environment Variables
+
+The backend uses the following environment variables which can be customised in
+`docker-compose.yml`:
+
+- `DB_FILE` – path to the SQLite database file
+- `JWT_SECRET` – secret used to sign JWT tokens
+
+Frontend configuration such as API base URLs can be adjusted by editing the
+Vite environment variables in `frontend/.env`.
+
+### Manual Development
+
+If you prefer running services locally without Docker you can start each in a
+separate terminal:
+
+```bash
+cd backend && npm install && node src/index.js
+
+cd evidence-service && npm install && node src/index.js
+
+cd auth-service && npm install && node src/index.js
+
+cd frontend && npm install && npm run dev
+```
+
+The React app will then be available at <http://localhost:5173>. Login through
+the `/login` page using a username from the seeded SQLite database. Once
+authenticated you can manage crimes, upload evidence and see notifications in
+real time.
