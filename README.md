@@ -1,24 +1,25 @@
 # Crime Resolution Tracking and Reminder System
 
-This repository contains a prototype implementation of a microservice-based Crime Resolution Tracking System. The Express.js service handles crime records with automatic deadlines, overdue detection, reminder tracking, escalation of unresolved cases, and basic per-station and per-officer statistics.
+This repository contains a prototype microservice implementation for managing crime records and related evidence.
 
 ## Structure
 
-- `backend/` – Node.js Express service that manages crime records. Includes unit tests with Jest and exposes REST endpoints for reminders, upcoming deadline checks, escalation, per-station and per-officer queries, category filtering, and statistics with station, category, or officer breakdown.
-- Upcoming deadline listing via `/api/crimes/due-soon`
-- Deletion of records via `DELETE /api/crimes/:id`
-- Notes can be attached to crimes via `/api/crimes/:id/notes`
+- `backend/` – Node.js Express service for crime records. Includes Jest tests and endpoints for reminders, escalation, statistics, and note management.
+- `evidence-service/` – Express service that stores evidence items linked to crimes.
 
-Further services (e.g., evidence management, notification, analytics) can be added in separate directories following a similar structure.
-
-See `crime-crs-features-list.md` for a brief list of implemented capabilities.
+Each service runs independently. Additional services (e.g., notification, analytics) can be added in separate directories.
+See `crime-crs-features-list.md` for a list of implemented features.
 
 ## Running Tests
 
-Navigate to the service directory and run `npm test`.
-
 ```bash
+# Crime service
 cd backend
+npm install
+npm test
+
+# Evidence service
+cd ../evidence-service
 npm install
 npm test
 ```

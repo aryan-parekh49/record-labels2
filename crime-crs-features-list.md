@@ -17,6 +17,7 @@ This document summarizes key capabilities implemented in this prototype.
 - Station-specific statistics endpoint
 - Category filtering for crimes and category-specific statistics
 - Notes can be added to crimes for additional context
+- Separate evidence management service for uploading and deleting evidence
 
 ## System Overview
-The code is intentionally lightweight and runs as a single Express service. It stores data in memory for demonstration and includes Jest tests for main workflows.
+The code runs as a set of small Express services with in-memory storage and Jest tests for key features.
