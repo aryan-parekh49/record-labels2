@@ -1,8 +1,12 @@
+import CrimeList from './CrimeList'
+import CrimeForm from './CrimeForm'
+
 function DashboardACP() {
   return (
     <div>
       <h2>Crime CRS - ACP Dashboard</h2>
-      <p>Region case progress view.</p>
+      <CrimeForm />
+      <CrimeList />
     </div>
   )
 }

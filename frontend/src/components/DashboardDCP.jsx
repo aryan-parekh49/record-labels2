@@ -1,8 +1,12 @@
+import CrimeList from './CrimeList'
+import CrimeForm from './CrimeForm'
+
 function DashboardDCP() {
   return (
     <div>
       <h2>Crime CRS - DCP Dashboard</h2>
-      <p>Station performance overview goes here.</p>
+      <CrimeForm />
+      <CrimeList />
     </div>
   )
 }

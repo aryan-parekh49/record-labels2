@@ -40,3 +40,15 @@
 .read-the-docs {
   color: #888;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+.overdue {
+  background-color: #ffe6e6;
+}
