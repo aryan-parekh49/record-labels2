@@ -46,3 +46,13 @@ docker-compose up
 ```
 
 Data will persist in the `backend-data` volume.
+
+## Top-level Test Script
+
+You can run all service tests at once using the root `package.json` scripts:
+
+```bash
+npm test
+```
+
+This runs the backend, evidence service, auth service, and frontend tests sequentially.
