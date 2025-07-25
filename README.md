@@ -4,7 +4,7 @@ This repository contains a prototype implementation of a microservice-based Crim
 
 ## Structure
 
-- `backend/` – Node.js Express service that manages crime records. Includes unit tests with Jest and exposes REST endpoints for reminders, escalation, per-station and per-officer queries, and statistics with station breakdown.
+- `backend/` – Node.js Express service that manages crime records. Includes unit tests with Jest and exposes REST endpoints for reminders, escalation, per-station and per-officer queries, category filtering, and statistics with station or category breakdown.
 
 Further services (e.g., evidence management, notification, analytics) can be added in separate directories following a similar structure.
 
