@@ -4,6 +4,7 @@ This document summarizes key capabilities implemented in this prototype.
 
 ## Core Features
 - CRUD operations for crime records
+- Deletion of crime records
 - Automatic resolution deadlines based on heading
 - Overdue detection and listing
 - Reminder tracking with three-stage reminders

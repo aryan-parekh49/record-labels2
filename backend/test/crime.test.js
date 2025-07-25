@@ -177,4 +177,13 @@ describe('Crime API', () => {
     const dueList = await request(app).get('/api/crimes/due-soon?days=7');
     expect(dueList.body.find(c => c.id === id)).toBeTruthy();
   });
+
+  it('should delete a crime record', async () => {
+    const res = await request(app).post('/api/crimes').send({ type: 'deleteMe' });
+    const id = res.body.id;
+    const delRes = await request(app).delete(`/api/crimes/${id}`);
+    expect(delRes.status).toBe(200);
+    const list = await request(app).get('/api/crimes');
+    expect(list.body.find(c => c.id === id)).toBeUndefined();
+  });
 });

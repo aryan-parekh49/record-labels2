@@ -172,6 +172,15 @@ app.put('/api/crimes/:id', (req, res) => {
   res.json(crime);
 });
 
+app.delete('/api/crimes/:id', (req, res) => {
+  const index = crimes.findIndex(c => c.id === parseInt(req.params.id));
+  if (index === -1) {
+    return res.status(404).send('Not Found');
+  }
+  const [removed] = crimes.splice(index, 1);
+  res.json(removed);
+});
+
 app.post('/api/crimes/:id/remind', (req, res) => {
   const crime = crimes.find(c => c.id === parseInt(req.params.id));
   if (!crime) {

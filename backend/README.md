@@ -13,6 +13,10 @@ node src/index.js
 ### Notable Endpoints
 
 - `POST /api/crimes` – create a crime record
+- `GET /api/crimes` – list all crimes
+- `GET /api/crimes/:id` – retrieve a specific crime
+- `PUT /api/crimes/:id` – update a crime
+- `DELETE /api/crimes/:id` – remove a crime record
 - `GET /api/crimes/overdue` – list overdue crimes
 - `GET /api/crimes/reminders-due` – list crimes that should receive a reminder
 - `GET /api/crimes/due-soon?days=7` – list crimes nearing their deadline (default 7 days)
