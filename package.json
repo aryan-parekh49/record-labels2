@@ -1,0 +1,16 @@
+{
+  "name": "crime-crs-monorepo",
+  "private": true,
+  "scripts": {
+    "test:backend": "npm --prefix backend test --silent",
+    "test:evidence-service": "npm --prefix evidence-service test --silent",
+    "test:auth-service": "npm --prefix auth-service test --silent",
+    "test:frontend": "npm --prefix frontend test -- --run --silent",
+    "test": "npm run test:backend && npm run test:evidence-service && npm run test:auth-service && npm run test:frontend",
+    "install:backend": "npm --prefix backend install --silent",
+    "install:evidence-service": "npm --prefix evidence-service install --silent",
+    "install:auth-service": "npm --prefix auth-service install --silent",
+    "install:frontend": "npm --prefix frontend install --silent",
+    "install": "npm run install:backend && npm run install:evidence-service && npm run install:auth-service && npm run install:frontend"
+  }
+}

@@ -14,8 +14,17 @@ const translations = {
     resolve: 'Resolve',
     escalate: 'Escalate',
     language: 'Language',
+     light: 'Light Mode',
+    dark: 'Dark Mode',
+    evidence: 'Evidence',
+    addEvidence: 'Add Evidence',
+    evidenceType: 'Type',
+    description: 'Description',
+    delete: 'Delete',
+    notifications: 'Notifications',
+=======
  
-  },
+   },
   hi: {
     login: 'क्राइम सीआरएस लॉगिन',
     addCrime: 'अपराध जोड़ें',
@@ -29,8 +38,17 @@ const translations = {
     resolve: 'समाधान',
     escalate: 'एस्कलेट',
     language: 'भाषा',
+     light: 'लाइट मोड',
+    dark: 'डार्क मोड',
+    evidence: 'सबूत',
+    addEvidence: 'सबूत जोड़ें',
+    evidenceType: 'प्रकार',
+    description: 'विवरण',
+    delete: 'हटाएं',
+    notifications: 'सूचनाएं',
+=======
  
-  },
+   },
   mr: {
     login: 'क्राईम सीआरएस लॉगिन',
     addCrime: 'गुन्हा जोडा',
@@ -44,8 +62,17 @@ const translations = {
     resolve: 'निकाल',
     escalate: 'एस्कलेट',
     language: 'भाषा',
+     light: 'लाइट मोड',
+    dark: 'डार्क मोड',
+    evidence: 'पुरावा',
+    addEvidence: 'पुरावा जोडा',
+    evidenceType: 'प्रकार',
+    description: 'वर्णन',
+    delete: 'हटवा',
+    notifications: 'सूचना',
+=======
  
-  },
+   },
 };
 
 export const LangContext = createContext('en')

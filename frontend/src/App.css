@@ -53,7 +53,9 @@ th, td {
   background-color: #ffe6e6;
 }
  .notifications {
-  position: fixed;
+=======
+ .notifications {
+   position: fixed;
   top: 1rem;
   right: 1rem;
   background: #fff;
@@ -62,5 +64,7 @@ th, td {
   max-width: 200px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+ =======
 =======
+ 
  
