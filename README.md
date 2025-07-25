@@ -31,3 +31,13 @@ cd ../frontend
 npm install
 npm test
 ```
+
+## Running with Docker Compose
+
+Start all services with:
+
+```bash
+docker-compose up
+```
+
+Data will persist in the `backend-data` volume.
