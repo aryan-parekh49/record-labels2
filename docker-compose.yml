@@ -1,0 +1,20 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_FILE=/data/crimes.sqlite
+    volumes:
+      - backend-data:/data
+  evidence:
+    build: ./evidence-service
+    ports:
+      - "4000:4000"
+  auth:
+    build: ./auth-service
+    ports:
+      - "5000:5000"
+volumes:
+  backend-data:
