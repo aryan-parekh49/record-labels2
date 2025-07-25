@@ -10,6 +10,7 @@ This document summarizes key capabilities implemented in this prototype.
 - Escalation of overdue crimes with reason logging
 - Station assignment for crimes and per-station queries
 - Officer assignment for crimes and per-officer queries
+- Officer-specific statistics endpoint
 - Statistics endpoint summarizing pending, resolved, and overdue counts
 - Station-specific statistics endpoint
 - Category filtering for crimes and category-specific statistics

@@ -122,6 +122,23 @@ describe('Crime API', () => {
     expect(stationStats.body.pending).toBe(2);
   });
 
+  it('should provide statistics for a specific officer', async () => {
+    await request(app)
+      .post('/api/crimes')
+      .send({ type: 'theft', officer: 'Alice' });
+    await request(app)
+      .post('/api/crimes')
+      .send({ type: 'fraud', officer: 'Alice' });
+    await request(app)
+      .post('/api/crimes')
+      .send({ type: 'assault', officer: 'Bob' });
+
+    const res = await request(app).get('/api/stats/officer/Alice');
+    expect(res.body.officer).toBe('Alice');
+    expect(res.body.total).toBe(2);
+    expect(res.body.pending).toBe(2);
+  });
+
   it('should filter crimes by category and provide category stats', async () => {
     await request(app)
       .post('/api/crimes')

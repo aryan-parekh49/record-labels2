@@ -22,5 +22,6 @@ node src/index.js
 - `GET /api/crimes/officer/:officer` – list crimes assigned to an officer
 - `GET /api/stats` – summary counts of pending/resolved/overdue
 - `GET /api/stats/station/:station` – stats for a specific station
+- `GET /api/stats/officer/:officer` – stats for a specific officer
 - `GET /api/crimes/category/:category` – list crimes by category
 - `GET /api/stats/category/:category` – stats for a specific category

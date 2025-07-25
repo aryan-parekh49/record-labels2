@@ -118,6 +118,16 @@ app.get('/api/stats/station/:station', (req, res) => {
   res.json({ station, total, pending, resolved, overdue });
 });
 
+app.get('/api/stats/officer/:officer', (req, res) => {
+  const { officer } = req.params;
+  const list = crimes.filter(c => c.officer === officer);
+  const total = list.length;
+  const pending = list.filter(c => c.status === 'pending').length;
+  const resolved = list.filter(c => c.status === 'resolved').length;
+  const overdue = list.filter(isOverdue).length;
+  res.json({ officer, total, pending, resolved, overdue });
+});
+
 app.get('/api/stats/category/:category', (req, res) => {
   const { category } = req.params;
   const list = crimes.filter(c => c.category === category);
