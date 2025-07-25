@@ -12,9 +12,10 @@ services:
     build: ./evidence-service
     ports:
       - "4000:4000"
-  auth:
+   auth:
     build: ./auth-service
     ports:
       - "5000:5000"
-volumes:
+=======
+ volumes:
   backend-data:

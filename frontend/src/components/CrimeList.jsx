@@ -1,7 +1,9 @@
-import { useEffect, useState, Fragment } from 'react'
+ import { useEffect, useState, Fragment } from 'react'
 import { getCrimes, resolveCrime, escalateCrime } from '../services/api.js'
 import EvidenceList from './EvidenceList.jsx'
-import { useTranslate } from '../localization/i18n.jsx'
+=======
+ 
+ import { useTranslate } from '../localization/i18n.jsx'
 
 function CrimeList() {
   const [crimes, setCrimes] = useState([])
@@ -34,9 +36,11 @@ function CrimeList() {
     await escalateCrime(id, reason)
     setCrimes(crimes.map(c => c.id === id ? {...c, escalated: true} : c))
   }
-
+ 
   const [showEvidenceFor, setShowEvidenceFor] = useState(null)
-  if (loading) return <p>Loading...</p>
+=======
+ 
+   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
 
   return (
@@ -52,7 +56,7 @@ function CrimeList() {
       </thead>
       <tbody>
         {crimes.map(c => (
-          <Fragment key={c.id}>
+           <Fragment key={c.id}>
             <tr key={c.id} className={c.overdue ? 'overdue' : ''}>
               <td>{c.id}</td>
               <td>{c.type || c.heading}</td>
@@ -80,7 +84,9 @@ function CrimeList() {
               </tr>
             )}
           </Fragment>
-        ))}
+=======
+ 
+         ))}
       </tbody>
     </table>
   )

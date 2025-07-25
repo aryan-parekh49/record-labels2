@@ -10,9 +10,13 @@ function createDb(file = ':memory:') {
       heading TEXT,
       station TEXT,
       officer TEXT,
-      penalCode TEXT,
+       penalCode TEXT,
       status TEXT,
-      reportedAt TEXT,
+=======
+       penalCode TEXT,
+=======
+       status TEXT,
+       reportedAt TEXT,
       deadline TEXT,
       remindersSent INTEGER,
       escalated INTEGER,
@@ -24,8 +28,10 @@ function createDb(file = ':memory:') {
       text TEXT,
       createdAt TEXT
     )`);
-    db.run(`CREATE TABLE IF NOT EXISTS penal_codes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+     db.run(`CREATE TABLE IF NOT EXISTS penal_codes (
+=======
+     db.run(`CREATE TABLE IF NOT EXISTS penal_codes (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
       code TEXT UNIQUE,
       description TEXT,
       days INTEGER
@@ -35,8 +41,11 @@ function createDb(file = ':memory:') {
       password TEXT,
       role TEXT
     )`);
-  });
-  return db;
+   });
+=======
+=======
+   });
+   return db;
 }
 
 module.exports = { createDb };

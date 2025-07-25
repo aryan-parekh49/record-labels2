@@ -4,18 +4,29 @@ const app = require('../src/index');
 let token;
 
 beforeAll(async () => {
-  await new Promise(res => app.resetData(res));
+   await new Promise(res => app.resetData(res));
   const res = await request(app).post('/api/login').send({ username: 'admin', password: 'password' });
-  token = res.body.token;
+=======
+   await new Promise(res => app.resetData(res));
+=======
+   const res = await request(app).post('/api/login').send({ username: 'admin', password: 'password' });
+   token = res.body.token;
 });
 
 function authed(req) {
   return req.set('Authorization', `Bearer ${token}`);
 }
 
-beforeEach(() => new Promise(res => app.resetData(res)));
+ beforeEach(() => new Promise(res => app.resetData(res)));
 
-describe('Crime API', () => {
+=======
+ beforeEach(() => new Promise(res => app.resetData(res)));
+=======
+afterEach(() => {
+  app.resetData();
+});
+ 
+ describe('Crime API', () => {
   it('should create a crime with default deadline and mark it resolved', async () => {
     const crimeData = { type: 'theft', description: 'stolen phone' };
   const postRes = await authed(request(app).post('/api/crimes')).send(crimeData);
@@ -177,8 +188,10 @@ describe('Crime API', () => {
     const list2 = await authed(request(app).get(`/api/crimes/${id}/notes`));
     expect(list2.body.length).toBe(0);
   });
-
-  it('should filter crimes by status and provide counts', async () => {
+ 
+=======
+ 
+   it('should filter crimes by status and provide counts', async () => {
     const c1 = await authed(request(app).post('/api/crimes')).send({});
     const c2 = await authed(request(app).post('/api/crimes')).send({});
 
@@ -238,4 +251,8 @@ describe('Crime API', () => {
     const del = await authed(request(app).delete('/api/users/bob'));
     expect(del.status).toBe(200);
   });
-});
+ });
+=======
+=======
+ });
+ 

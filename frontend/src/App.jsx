@@ -4,9 +4,11 @@ import DashboardDCP from './components/DashboardDCP'
 import DashboardACP from './components/DashboardACP'
 import DashboardPI from './components/DashboardPI'
 import { useState } from 'react'
-import NotificationCenter from './components/NotificationCenter.jsx'
+ import NotificationCenter from './components/NotificationCenter.jsx'
 import { NotificationsProvider } from './hooks/useNotifications.jsx'
-import './App.css'
+=======
+ 
+ import './App.css'
 
 function App() {
   const [role, setRole] = useState(null)
@@ -20,7 +22,7 @@ function App() {
   }
 
   return (
-    <NotificationsProvider>
+     <NotificationsProvider>
       <Router>
         <NotificationCenter />
         <Routes>
@@ -32,6 +34,8 @@ function App() {
       </Router>
     </NotificationsProvider>
   )
-}
+=======
+ 
+ }
 
 export default App
