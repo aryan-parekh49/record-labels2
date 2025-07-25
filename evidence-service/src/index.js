@@ -1,13 +1,16 @@
 const express = require('express');
+const crypto = require('crypto');
 const app = express();
 app.use(express.json());
 
 let evidences = [];
 let nextId = 1;
+let chain = [];
 
 function resetData() {
   evidences = [];
   nextId = 1;
+  chain = [];
 }
 
 app.post('/api/evidence', (req, res) => {
@@ -23,12 +26,22 @@ app.post('/api/evidence', (req, res) => {
     createdAt: new Date().toISOString(),
   };
   evidences.push(evidence);
+  const prevHash = chain.length ? chain[chain.length - 1].hash : '';
+  const hash = crypto
+    .createHash('sha256')
+    .update(JSON.stringify({ prevHash, ...evidence }))
+    .digest('hex');
+  chain.push({ hash, prevHash, evidenceId: evidence.id });
   res.status(201).json(evidence);
 });
 
 app.get('/api/evidence/crime/:crimeId', (req, res) => {
   const { crimeId } = req.params;
   res.json(evidences.filter(e => e.crimeId == crimeId));
+});
+
+app.get('/api/evidence/chain', (req, res) => {
+  res.json(chain);
 });
 
 app.delete('/api/evidence/:id', (req, res) => {

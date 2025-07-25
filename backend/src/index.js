@@ -1,6 +1,69 @@
 const express = require('express');
+const { createDb } = require('./db');
+const fs = require('fs');
+const path = require('path');
+const jwt = require('jsonwebtoken');
+const WebSocket = require('ws');
+
 const app = express();
 app.use(express.json());
+
+const dbFile = process.env.DB_FILE || path.join(__dirname, '../data/crime.sqlite');
+const db = createDb(dbFile);
+const SECRET = process.env.JWT_SECRET || 'secret123';
+const users = [{ username: 'admin', password: 'password', role: 'dcp' }];
+
+function auth(req, res, next) {
+  if (req.path === '/api/login') return next();
+  const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+  if (!token) return res.status(401).send('No token');
+  try {
+    req.user = jwt.verify(token, SECRET);
+    next();
+  } catch (e) {
+    res.status(401).send('Invalid token');
+  }
+}
+
+app.use(auth);
+app.broadcast = () => {};
+
+function loadData() {
+  if (!fs.existsSync(dbFile)) return;
+  crimes = [];
+  db.all('SELECT * FROM crimes', [], (err, rows) => {
+    if (!err) {
+      crimes = rows.map(r => ({ ...r, notes: [] }));
+      crimes.forEach(c => {
+        db.all('SELECT * FROM notes WHERE crimeId = ?', [c.id], (e, notes) => {
+          if (!e) c.notes = notes;
+        });
+      });
+      nextId = crimes.reduce((m, c) => Math.max(m, c.id), 0) + 1;
+    }
+  });
+}
+
+function saveCrime(crime) {
+  const stmt = db.prepare(`INSERT INTO crimes (id, category, heading, station, officer, status, reportedAt, deadline, remindersSent, escalated, escalationReason)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+  stmt.run(crime.id, crime.category, crime.heading, crime.station, crime.officer, crime.status, crime.reportedAt, crime.deadline, crime.remindersSent, crime.escalated ? 1 : 0, crime.escalationReason);
+}
+
+function updateCrimeDb(crime) {
+  const stmt = db.prepare(`UPDATE crimes SET category=?, heading=?, station=?, officer=?, status=?, reportedAt=?, deadline=?, remindersSent=?, escalated=?, escalationReason=? WHERE id=?`);
+  stmt.run(crime.category, crime.heading, crime.station, crime.officer, crime.status, crime.reportedAt, crime.deadline, crime.remindersSent, crime.escalated ? 1 : 0, crime.escalationReason, crime.id);
+}
+
+function deleteCrimeDb(id) {
+  db.run('DELETE FROM crimes WHERE id=?', [id]);
+  db.run('DELETE FROM notes WHERE crimeId=?', [id]);
+}
+
+function addNoteDb(crimeId, note) {
+  const stmt = db.prepare(`INSERT INTO notes (crimeId, text, createdAt) VALUES (?, ?, ?)`);
+  stmt.run(crimeId, note.text, note.createdAt);
+}
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -16,6 +79,7 @@ let nextId = 1;
 function addNote(crime, text) {
   const note = { id: crime.notes.length + 1, text, createdAt: new Date().toISOString() };
   crime.notes.push(note);
+  addNoteDb(crime.id, note);
   return note;
 }
 
@@ -55,7 +119,17 @@ function dueSoon(days = 7) {
 function resetData() {
   crimes = [];
   nextId = 1;
+  db.exec('DELETE FROM crimes');
+  db.exec('DELETE FROM notes');
 }
+
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (!user) return res.status(401).send('Invalid credentials');
+  const token = jwt.sign({ username: user.username, role: user.role }, SECRET);
+  res.json({ token });
+});
 
 app.post('/api/crimes', (req, res) => {
   const { category = 'Major', heading = 'default', station = 'Station 1', officer = '', ...rest } = req.body;
@@ -78,6 +152,8 @@ app.post('/api/crimes', (req, res) => {
     ...rest,
   };
   crimes.push(crime);
+  saveCrime(crime);
+  app.broadcast('crime-created', crime);
   res.status(201).json(crime);
 });
 
@@ -176,6 +252,8 @@ app.put('/api/crimes/:id', (req, res) => {
     return res.status(404).send('Not Found');
   }
   Object.assign(crime, req.body);
+  updateCrimeDb(crime);
+  app.broadcast('crime-updated', crime);
   res.json(crime);
 });
 
@@ -185,6 +263,8 @@ app.delete('/api/crimes/:id', (req, res) => {
     return res.status(404).send('Not Found');
   }
   const [removed] = crimes.splice(index, 1);
+  deleteCrimeDb(removed.id);
+  app.broadcast('crime-deleted', removed);
   res.json(removed);
 });
 
@@ -219,6 +299,7 @@ app.delete('/api/crimes/:id/notes/:noteId', (req, res) => {
     return res.status(404).send('Not Found');
   }
   const [removed] = crime.notes.splice(index, 1);
+  db.run('DELETE FROM notes WHERE id=?', [removed.id]);
   res.json(removed);
 });
 
@@ -232,6 +313,7 @@ app.post('/api/crimes/:id/remind', (req, res) => {
     return res.status(400).send('Reminder not due');
   }
   crime.remindersSent += 1;
+  updateCrimeDb(crime);
   res.json({ reminderLevel: level, crime });
 });
 
@@ -249,6 +331,8 @@ app.post('/api/crimes/:id/escalate', (req, res) => {
   }
   crime.escalated = true;
   crime.escalationReason = reason;
+  updateCrimeDb(crime);
+  app.broadcast('crime-escalated', crime);
   res.json(crime);
 });
 
@@ -258,15 +342,25 @@ app.post('/api/crimes/:id/resolve', (req, res) => {
     return res.status(404).send('Not Found');
   }
   crime.status = 'resolved';
+  updateCrimeDb(crime);
+  app.broadcast('crime-resolved', crime);
   res.json(crime);
 });
 
 if (require.main === module) {
+  loadData();
   const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Server running on port ${port}`));
+  const server = app.listen(port, () => console.log(`Server running on port ${port}`));
+  const wss = new WebSocket.Server({ server, path: '/ws' });
+  function broadcast(event, payload) {
+    const msg = JSON.stringify({ event, payload });
+    wss.clients.forEach(c => c.readyState === WebSocket.OPEN && c.send(msg));
+  }
+  app.broadcast = broadcast;
 }
 
 module.exports = app;
 module.exports.resetData = resetData;
 module.exports.isOverdue = isOverdue;
 module.exports.dueSoon = dueSoon;
+module.exports.loadData = loadData;
