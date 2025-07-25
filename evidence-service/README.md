@@ -1,7 +1,6 @@
 # Evidence Management Service
 
-This simple Express service manages evidence items linked to crime records.
-It stores data in memory and provides minimal REST endpoints.
+This Express service manages evidence items linked to crime records. Evidence submissions are hashed and appended to a simple chain to demonstrate blockchain-style immutability.
 
 ## Usage
 
@@ -16,3 +15,4 @@ node src/index.js
 - `POST /api/evidence` – add an evidence item `{ crimeId, type, description }`
 - `GET /api/evidence/crime/:crimeId` – list evidence for a crime
 - `DELETE /api/evidence/:id` – delete an evidence item
+- `GET /api/evidence/chain` – retrieve hash chain

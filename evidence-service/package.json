@@ -13,6 +13,7 @@
   "dependencies": {
     "express": "^5.1.0",
     "jest": "^30.0.5",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4"
   }
 }

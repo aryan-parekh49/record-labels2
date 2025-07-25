@@ -1,6 +1,6 @@
 # Crime Tracking Backend
 
-This Express.js service manages crime records. It uses in-memory storage and exposes endpoints for deadlines, reminders, escalations, and statistics.
+This Express.js service manages crime records. Data is stored in a SQLite database and all routes require a valid JWT token. The server also opens a WebSocket endpoint so clients can subscribe to updates.
 
 Other services such as evidence management run in their own directories.
 
@@ -13,6 +13,7 @@ node src/index.js
 ```
 
 ### Notable Endpoints
+- `POST /api/login` – obtain a JWT token
 - `POST /api/crimes` – create a crime record
 - `GET /api/crimes` – list all crimes
 - `GET /api/crimes/:id` – retrieve a specific crime
@@ -34,3 +35,4 @@ node src/index.js
 - `GET /api/stats/officer/:officer` – stats for a specific officer
 - `GET /api/crimes/category/:category` – list crimes by category
 - `GET /api/stats/category/:category` – stats for a specific category
+- WebSocket endpoint at /ws for real-time updates

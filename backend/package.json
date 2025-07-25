@@ -12,7 +12,10 @@
   "type": "commonjs",
   "dependencies": {
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "ws": "^8.17.0",
     "jest": "^30.0.5",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4"
   }
 }
