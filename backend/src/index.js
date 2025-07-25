@@ -90,12 +90,27 @@ app.get('/api/crimes/station/:station', (req, res) => {
   res.json(crimes.filter(c => c.station === station));
 });
 
+app.get('/api/crimes/officer/:officer', (req, res) => {
+  const { officer } = req.params;
+  res.json(crimes.filter(c => c.officer === officer));
+});
+
 app.get('/api/stats', (req, res) => {
   const total = crimes.length;
   const pending = crimes.filter(c => c.status === 'pending').length;
   const resolved = crimes.filter(c => c.status === 'resolved').length;
   const overdue = crimes.filter(isOverdue).length;
   res.json({ total, pending, resolved, overdue });
+});
+
+app.get('/api/stats/station/:station', (req, res) => {
+  const { station } = req.params;
+  const list = crimes.filter(c => c.station === station);
+  const total = list.length;
+  const pending = list.filter(c => c.status === 'pending').length;
+  const resolved = list.filter(c => c.status === 'resolved').length;
+  const overdue = list.filter(isOverdue).length;
+  res.json({ station, total, pending, resolved, overdue });
 });
 
 app.get('/api/crimes/:id', (req, res) => {

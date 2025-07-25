@@ -19,4 +19,6 @@ node src/index.js
 - `POST /api/crimes/:id/escalate` – escalate an overdue crime with a reason
 - `GET /api/crimes/escalated` – list escalated crimes
 - `GET /api/crimes/station/:station` – list crimes for a station
+- `GET /api/crimes/officer/:officer` – list crimes assigned to an officer
 - `GET /api/stats` – summary counts of pending/resolved/overdue
+- `GET /api/stats/station/:station` – stats for a specific station
